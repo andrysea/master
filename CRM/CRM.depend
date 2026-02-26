@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1772095734 source:c:\users\marinoandr\desktop\personale\master\ai_engineering\progetti\crm\main.cpp
+	<iostream>
+	<string>
+	<vector>
+	<fstream>
+	<algorithm>
+	<cctype>
+

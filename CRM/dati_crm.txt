@@ -1,0 +1,5 @@
+CLIENTE;Andrea;Marino
+COUNT;3
+Contratto;A
+Appuntamento;Dwescri
+Appuntamento;ff
