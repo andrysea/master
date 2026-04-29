@@ -1,3 +1,5 @@
+Obiettivo del progetto per esame "Sviluppo di REST API per il Machine Learning":
+
 Messa in Produzione di un Sistema per il Riconoscimento della Lingua di Testi per un Museo
 Caso d'Uso Aziendale: MuseumLangAPI
 
