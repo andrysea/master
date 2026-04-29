@@ -1,6 +1,6 @@
 Obiettivo progetto per master:
-CRM per impresa di assicurazioni
-InsuraPro Solutions si dedica a migliorare l'efficienza e la qualità del servizio clienti per le imprese di assicurazioni, sviluppando un avanzato sistema di Customer Relationship Management (CRM) che facilita la gestione delle informazioni sui clienti e delle loro interazioni con l'azienda.
+
+CRM per impresa di assicurazioni InsuraPro Solutions si dedica a migliorare l'efficienza e la qualità del servizio clienti per le imprese di assicurazioni, sviluppando un avanzato sistema di Customer Relationship Management (CRM) che facilita la gestione delle informazioni sui clienti e delle loro interazioni con l'azienda.
 
 Le imprese di assicurazioni necessitano di un metodo sistematico e centralizzato per gestire le informazioni sui clienti e tracciare le interazioni. Molti sistemi attuali sono frammentati o non user-friendly, ostacolando l’efficacia operativa e la soddisfazione del cliente.
 
