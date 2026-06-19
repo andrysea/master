@@ -1,0 +1,155 @@
+# Creazione del Database e delle collezioni con popolamento
+use cartelle_cliniche
+
+db.pazienti.insertMany([
+    {
+        nome: "Mario Rossi",
+        ricoveri: [
+            {
+                DataRicovero: ISODate("2026-01-10T09:30:00Z"),
+                Diagnosi: "Polmonite",
+                Anamnesi: "Paziente con febbre e tosse.",
+                Prognosi: "7 giorni",
+                DataDimissione: ISODate("2026-01-17T11:00:00Z")
+            },
+            {
+                DataRicovero: ISODate("2026-03-05T10:00:00Z"),
+                Diagnosi: "Allergia al lunedì",
+                Anamnesi: "Il paziente manifesta stanchezza improvvisa appena sente la sveglia.",
+                Prognosi: "3 giorni di riposo e divieto assoluto di riunioni mattutine.",
+                DataDimissione: ISODate("2026-03-08T11:00:00Z")
+            }
+        ]
+    },
+    {
+        nome: "Andrea Marino",
+        ricoveri: [
+            {
+                DataRicovero: ISODate("2026-01-11T09:30:00Z"),
+                Diagnosi: "Pazzia",
+                Anamnesi: "Paziente con piaghe sulle mani causate da eccessiva programmazione.",
+                Prognosi: "7 giorni",
+                DataDimissione: ISODate("2026-01-18T11:00:00Z")
+            },
+            {
+                DataRicovero: ISODate("2026-02-11T09:30:00Z"),
+                Diagnosi: "Stress da lavoro",
+                Anamnesi: "Paziente dice di aver bisogno di una pausa lavorativa.",
+                Prognosi: "10 giorni",
+                DataDimissione: ISODate("2026-02-21T11:00:00Z")
+            }
+        ]
+    },
+    {
+        nome: "Luigi Bianchi",
+        ricoveri: [
+            {
+                DataRicovero: ISODate("2026-01-10T09:30:00Z"),
+                Diagnosi: "Febbre",
+                Anamnesi: "Paziente con nausea e febbre.",
+                Prognosi: "2 giorni",
+                DataDimissione: ISODate("2026-01-12T11:00:00Z")
+            },
+            {
+                DataRicovero: ISODate("2026-03-12T09:45:00Z"),
+                Diagnosi: "Crampo da mouse",
+                Anamnesi: "Paziente riferisce uso intensivo del computer senza pause.",
+                Prognosi: "4 giorni di stretching e mouse lontano dalla mano.",
+                DataDimissione: ISODate("2026-03-16T10:30:00Z")
+            }
+        ]
+    },
+    {
+        nome: "Mario Verdi",
+        ricoveri: [
+            {
+                DataRicovero: ISODate("2026-01-10T09:30:00Z"),
+                Diagnosi: "Lingua blu",
+                Anamnesi: "Paziente con la lingua blu.",
+                Prognosi: "3 giorni",
+                DataDimissione: ISODate("2026-01-13T11:00:00Z")
+            },
+            {
+                DataRicovero: ISODate("2026-04-01T08:30:00Z"),
+                Diagnosi: "Risata incontrollata",
+                Anamnesi: "Paziente ride ogni volta che sente la parola database.",
+                Prognosi: "5 giorni lontano da MongoDB.",
+                DataDimissione: ISODate("2026-04-06T10:00:00Z")
+            }
+        ]
+    },
+    {
+        nome: "Michele Celesti",
+        ricoveri: [
+            {
+                DataRicovero: ISODate("2026-01-10T09:30:00Z"),
+                Diagnosi: "Fame acuta",
+                Anamnesi: "Paziente con fame eccessiva e ripetuta nel tempo.",
+                Prognosi: "15 giorni",
+                DataDimissione: ISODate("2026-01-25T11:00:00Z")
+            },
+            {
+                DataRicovero: ISODate("2026-03-20T12:00:00Z"),
+                Diagnosi: "Dipendenza da carbonara",
+                Anamnesi: "Paziente dichiara di vedere spaghetti ovunque.",
+                Prognosi: "7 giorni di carbonara usando la pancetta, per far emergere il disgusto.",
+                DataDimissione: ISODate("2026-03-27T11:00:00Z")
+            }
+        ]
+    }
+])
+
+
+# Analisi dei tempi di ricovero
+db.pazienti.aggregate([
+  {
+    $unwind: "$ricoveri"
+  },
+  {
+    $project: {
+      _id: 0,
+      nome: 1,
+      giorniRicovero: {
+        $dateDiff: {
+          startDate: "$ricoveri.DataRicovero",
+          endDate: "$ricoveri.DataDimissione",
+          unit: "day"
+        }
+      }
+    }
+  },
+  {
+    $group: {
+      _id: null,
+      numeroRicoveri: { $sum: 1 },
+      tempoMedioGiorni: { $avg: "$giorniRicovero" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      numeroRicoveri: 1,
+      tempoMedioGiorni: 1
+    }
+  }
+])
+
+OUTPUT:
+{
+  numeroRicoveri: 10,
+  tempoMedioGiorni: 6.3
+}
+
+Dati inseriti:
+{7, 3, 7, 10, 2, 4, 3, 5, 15, 7} -> Somma -> 63 / 10 = 6.3 -> Media
+
+SPIEGAZIONE:
+- Con $unwind, vado a spacchettare l'array ricoveri, quindi avrò ripetuto per ogni utente:
+Mario Rossi -> ricovero1
+Mario Rossi -> ricovero2
+
+- Con $project, vado a calcolare per ogni ricovero, la differenza tra la data di ingresso e la data di dimissione
+
+- Con $group, settando _id: null metto tutto in un unico gruppo finale, e mostro alla fine il numero di ricoveri che ci 
+sno stati in questo caso ho inserito 10 ricoveri e ho il campo tempoMedioGiorni, che mostra la media dei giorni di ricovero
+calcolato sui giorni di ricoveri dei pazienti inseriti.
